@@ -14,3 +14,26 @@ var myMap = L.map("mapid", {
   zoom: 4,
   layers: [grayscaleMap, earthquakes]
 });
+
+d3.json(earthquakesURL, function(earthquakeData) {
+  function markerSize(magnitude) {
+    return magnitude * 3;
+  };
+
+  function chooseColor(depth) {
+    switch(true) {
+      case depth > 90:
+        return "red";
+      case depth > 70:
+        return "orangered";
+      case depth > 50:
+        return "orange";
+      case depth > 30:
+        return "gold";
+      case depth > 10:
+        return "yellow";
+      default:
+        return "lightgreen";
+    }
+  };
+});
