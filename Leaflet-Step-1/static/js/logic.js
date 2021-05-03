@@ -1,3 +1,4 @@
+
 var earthquakesURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
 var earthquakes = L.layerGroup();
@@ -20,20 +21,41 @@ d3.json(earthquakesURL, function(earthquakeData) {
     return magnitude * 3;
   };
 
+  L.geoJSON(earthquakeData, {
+    pointToLayer: function (feature, latlng) {
+      return L.circleMarker(latlng, 
+        {
+          radius: markerSize(feature.properties.mag),
+          fillColor: chooseColor(feature.geometry.coordinates[2]),
+          fillOpacity: .8,
+          weight: .4,
+          color: "black",
+          stroke: true,
+        }
+      );
+    },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup("<h3>Location: " + feature.properties.place + "</h3><hr><p>Date: "
+      + new Date(feature.properties.time) + "</p><hr><p>Magnitude: " + feature.properties.mag + "</p>");
+    }
+  }).addTo(earthquakes);
+  earthquakes.addTo(myMap);
+
   function chooseColor(depth) {
     switch(true) {
       case depth > 90:
-        return "red";
+        return "darkred";
       case depth > 70:
-        return "orangered";
+        return "red";
       case depth > 50:
         return "orange";
       case depth > 30:
-        return "gold";
-      case depth > 10:
         return "yellow";
+      case depth > 10:
+        return "tan";
       default:
-        return "lightgreen";
+        return "teal";
     }
   };
+
 });
